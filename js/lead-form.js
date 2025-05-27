@@ -16,6 +16,7 @@ jQuery(document).ready(function ($) {
         }, function (response) {
             if (response.success) {
                 $msg.text(response.data.message).css('color', 'green');
+                $button.text('QUERO DESCOBRIR AGORA');
                 setTimeout(() => {
                     window.location.href = response.data.redirect;
                 }, 1000);
