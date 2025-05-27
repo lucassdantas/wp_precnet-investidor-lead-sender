@@ -108,7 +108,7 @@ function precnet_send_lead() {
         $message .= "Email: {$_POST['email']}\n";
         $message .= "Aceitou os termos: Sim\n";
 
-        $headers = ['Content-Type: text/plain; charset=UTF-8', 'Cc: lucasdantas.rdmarketingdigital@gmail.com'];
+        $headers = ['Content-Type: text/plain; charset=UTF-8'];
 
         $email_sent = wp_mail($to, $subject, $message, $headers);
 
