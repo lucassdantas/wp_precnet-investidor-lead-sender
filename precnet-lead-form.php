@@ -99,8 +99,27 @@ function precnet_send_lead() {
 
     // 3. Sucesso
     if ($status_code === 201) {
+
+        // Envia e-mail com os dados do lead
+        $to = 'investidor@precnet.com.br';
+        $subject = 'Novo Lead do Formulário do Site';
+        $message = "Nome: {$_POST['name']}\n";
+        $message .= "Telefone: {$_POST['phone']}\n";
+        $message .= "Email: {$_POST['email']}\n";
+        $message .= "Aceitou os termos: Sim\n";
+
+        $headers = ['Content-Type: text/plain; charset=UTF-8', 'Cc: lucasdantas.rdmarketingdigital@gmail.com'];
+
+        $email_sent = wp_mail($to, $subject, $message, $headers);
+
+        // Se o e-mail falhar
+        if (!$email_sent) {
+            wp_send_json_error('E-mail não enviado, tente novamente mais tarde.');
+        }
+
+        // Se tudo der certo
         wp_send_json_success([
-            'message' => $body['message'] ?? 'Cadastro realizado com sucesso!',
+            'message' =>  'Sucesso!',
             'redirect' => 'https://investidor.precnet.com.br/cadastro-realizado/',
         ]);
     }
