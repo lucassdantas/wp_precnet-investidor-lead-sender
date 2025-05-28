@@ -1,9 +1,12 @@
 .precnet-lead-form {
+    overflow:hidden;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   max-width: 700px;
   margin: 0 auto;
+  min-height:390px;
+  align-items:flex-start;
 }
 
 .precnet-lead-form label {
@@ -52,6 +55,10 @@
   text-decoration: underline;
 }
 
+.precnet-lead-form .button-container{
+    height:50px;
+    width:100%;
+}
 .precnet-lead-form button {
   background-color: var(--e-global-color-dea41e4);
   border: none;
@@ -62,15 +69,19 @@
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 1 1 100%;
+  transform-origin: center center;
+  will-change: transform;
+  width:100%;
+    
 }
 
 .precnet-lead-form button:hover {
-  transform: scale(1.05);
+  transform: scale(1.01);
   background-color: var(--e-global-color-c124ea5);
   color:#fff;
 }
 .precnet-lead-form button:focus {
-  color:#fff;
+  color:#fff!important;
 }
 
 #precnet-lead-form-msg {

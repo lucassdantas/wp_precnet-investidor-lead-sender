@@ -37,8 +37,9 @@ function precnet_render_lead_form() {
             <input type="checkbox" name="terms" required>
             ACEITO OS <a href="https://investidor.precnet.com.br/politica-de-privacidade/" target="_blank">TERMOS</a> PARA USO DE DADOS.
         </label>
-
-        <button type="submit">QUERO DESCOBRIR AGORA</button>
+        <div class='button-container'>
+            <button type="submit">QUERO DESCOBRIR AGORA</button>
+        </div>
 
         <div id="precnet-lead-form-msg"></div>
     </form>
@@ -93,38 +94,33 @@ function precnet_send_lead() {
     $body = json_decode(wp_remote_retrieve_body($response), true);
 
     // 2. Erro 500 da API
-    if ($status_code === 500) {
-        wp_send_json_error('Serviço indisponível, tente novamente mais tarde.');
+    if ($status_code >= 400) {
+      wp_send_json_error('Os campos e/ou valores enviados são inválidos. Verifique e tente novamente.');
     }
 
-    // 3. Sucesso
-    if ($status_code === 201) {
+    // Envia e-mail com os dados do lead
+    $to = 'investidor@precnet.com.br';
+    $subject = 'Novo Lead do Formulário do Site';
+    $message = "Nome: {$_POST['name']}\n";
+    $message .= "Telefone: {$_POST['phone']}\n";
+    $message .= "Email: {$_POST['email']}\n";
+    $message .= "Aceitou os termos: Sim\n";
 
-        // Envia e-mail com os dados do lead
-        $to = 'investidor@precnet.com.br';
-        $subject = 'Novo Lead do Formulário do Site';
-        $message = "Nome: {$_POST['name']}\n";
-        $message .= "Telefone: {$_POST['phone']}\n";
-        $message .= "Email: {$_POST['email']}\n";
-        $message .= "Aceitou os termos: Sim\n";
+    $headers = ['Content-Type: text/plain; charset=UTF-8'];
 
-        $headers = ['Content-Type: text/plain; charset=UTF-8'];
+    $email_sent = wp_mail($to, $subject, $message, $headers);
 
-        $email_sent = wp_mail($to, $subject, $message, $headers);
-
-        // Se o e-mail falhar
-        if (!$email_sent) {
-            wp_send_json_error('E-mail não enviado, tente novamente mais tarde.');
-        }
-
-        // Se tudo der certo
-        wp_send_json_success([
-            'message' =>  'Sucesso!',
-            'redirect' => 'https://investidor.precnet.com.br/cadastro-realizado/',
-        ]);
+    // Se o e-mail falhar
+    if (!$email_sent) {
+        wp_send_json_error('E-mail não enviado, tente novamente mais tarde.');
+        return;
     }
 
-    // 4. Outros erros (ex: 400)
-    wp_send_json_error('Os campos e/ou valores enviados são inválidos. Verifique e tente novamente.');
+    // Se tudo der certo
+    wp_send_json_success([
+        'message' =>  'Sucesso!',
+        'redirect' => 'https://investidor.precnet.com.br/cadastro-realizado/',
+    ]);
+
 }
 
