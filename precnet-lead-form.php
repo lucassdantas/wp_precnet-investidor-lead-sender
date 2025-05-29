@@ -94,10 +94,10 @@ function precnet_send_lead() {
     $body = json_decode(wp_remote_retrieve_body($response), true);
 
 
-    if ($status_code >= 500) wp_send_json_error('Serviço indisponível. Tente novamente mais tarde.');
-    if ($status_code >= 400) wp_send_json_error('Os campos e/ou valores enviados são inválidos. Verifique e tente novamente.');
+    if ($status_code >= 500 && $status_code < 600) wp_send_json_error('Serviço indisponível. Tente novamente mais tarde.');
+    if ($status_code >= 400 && $status_code < 500) wp_send_json_error('Os campos e/ou valores enviados são inválidos. Verifique e tente novamente.');
    
-    if ($status_code >= 200 && $status_code < 299) {
+    if ($status_code >= 200 && $status_code < 400) {
       // Envia e-mail com os dados do lead
       $to = 'investidor@precnet.com.br';
       $subject = 'Novo Lead do Formulário do Site';
